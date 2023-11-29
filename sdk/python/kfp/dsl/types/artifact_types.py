@@ -333,6 +333,10 @@ class SlicedClassificationMetrics(Artifact):
     """
 
     schema_title = 'system.SlicedClassificationMetrics'
+    def __init__(self):
+        """initialise _sliced_metrics"""
+        self._sliced_metrics = {}
+        super().__init__()
 
     def _upsert_classification_metrics_for_slice(self, slice: str) -> None:
         """Upserts the classification metrics instance for a slice."""
@@ -351,32 +355,36 @@ class SlicedClassificationMetrics(Artifact):
             }
             self.metadata['evaluationSlices'].append(slice_metrics)
 
-    def log_roc_reading(self, slice: str, threshold: float, tpr: float,
-                        fpr: float) -> None:
+    def log_roc_data_point(self, slice: str, fpr: float, tpr: float, 
+                           threshold: float) -> None:
         """Logs a single data point in the ROC curve of a slice to metadata.
 
         Args:
           slice: String representing slice label.
-          threshold: Thresold value for the data point.
-          tpr: True positive rate value of the data point.
           fpr: False positive rate value of the data point.
+          tpr: True positive rate value of the data point.
+          threshold: Threshold value for the data point.
         """
 
         self._upsert_classification_metrics_for_slice(slice)
-        self._sliced_metrics[slice].log_roc_reading(threshold, tpr, fpr)
+        self._sliced_metrics[slice].log_roc_data_point(fpr, tpr, threshold)
         self._update_metadata(slice)
 
-    def load_roc_readings(self, slice: str,
-                          readings: List[List[float]]) -> None:
-        """Bulk loads ROC curve readings for a slice.
+
+    def log_roc_curve(self, slice: str, fpr: List[float], tpr: List[float],
+                      threshold: List[float]) -> None:
+        """logs a ROC curve for this slice
 
         Args:
           slice: String representing slice label.
-          readings: A 2-dimensional list providing ROC curve data points. The expected order of the data points is: threshold, true positive rate, false positive rate.
+          fpr: List of false positive rate values.
+          tpr: List of true positive rate values.
+          threshold: List of threshold values.
         """
         self._upsert_classification_metrics_for_slice(slice)
-        self._sliced_metrics[slice].load_roc_readings(readings)
+        self._sliced_metrics[slice].log_roc_curve(fpr, tpr, threshold)
         self._update_metadata(slice)
+
 
     def set_confusion_matrix_categories(self, slice: str,
                                         categories: List[str]) -> None:
