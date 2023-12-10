@@ -333,10 +333,10 @@ class SlicedClassificationMetrics(Artifact):
     """
 
     schema_title = 'system.SlicedClassificationMetrics'
-    def __init__(self):
+    def __init__(self, **kwargs):
         """initialise _sliced_metrics"""
         self._sliced_metrics = {}
-        super().__init__()
+        super().__init__(**kwargs)
 
     def _upsert_classification_metrics_for_slice(self, slice: str) -> None:
         """Upserts the classification metrics instance for a slice."""

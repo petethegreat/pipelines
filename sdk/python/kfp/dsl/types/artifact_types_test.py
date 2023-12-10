@@ -41,6 +41,26 @@ class ArtifactsTest(unittest.TestCase):
         ) as json_file:
             expected_json = json.load(json_file)
             self.assertEqual(expected_json, metrics.metadata)
+    
+    def test_sliced_complex_metrics(self):
+        metrics = dsl.SlicedClassificationMetrics()
+        metrics.log_roc_data_point("slice1", threshold=0.12, tpr=27.5, fpr=86.32)
+        metrics.log_roc_data_point("slice1", threshold=26.3, tpr=98.6, fpr=66.4)
+        metrics.log_roc_data_point("slice2", threshold=0.15, tpr=28.5, fpr=84.32)
+        metrics.log_roc_data_point("slice2", threshold=26.6, tpr=93.6, fpr=56.4)
+        # metrics.set_confusion_matrix_categories(['dog', 'cat', 'horses'])
+        # metrics.log_confusion_matrix_row('dog', [2, 6, 0])
+        # metrics.log_confusion_matrix_cell('cat', 'dog', 3)
+        # metrics.log_confusion_matrix_cell('horses', 'horses', 3)
+        metrics.metadata['test'] = 1.0
+        with open(
+                os.path.join(
+                    os.path.dirname(__file__), 'test_data',
+                    'expected_io_types_sliced_classification_metrics.json')
+        ) as json_file:
+            expected_json = json.load(json_file)
+            self.assertEqual(expected_json, metrics.metadata)
+
 
     def test_complex_metrics_bulk_loading(self):
         metrics = dsl.ClassificationMetrics()
