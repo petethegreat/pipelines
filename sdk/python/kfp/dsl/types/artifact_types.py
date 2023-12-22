@@ -333,6 +333,7 @@ class SlicedClassificationMetrics(Artifact):
     """
 
     schema_title = 'system.SlicedClassificationMetrics'
+
     def __init__(self, **kwargs):
         """initialise _sliced_metrics"""
         self._sliced_metrics = {}
@@ -355,7 +356,7 @@ class SlicedClassificationMetrics(Artifact):
             }
             self.metadata['evaluationSlices'].append(slice_metrics)
 
-    def log_roc_data_point(self, slice: str, fpr: float, tpr: float, 
+    def log_roc_data_point(self, slice: str, fpr: float, tpr: float,
                            threshold: float) -> None:
         """Logs a single data point in the ROC curve of a slice to metadata.
 
@@ -370,7 +371,6 @@ class SlicedClassificationMetrics(Artifact):
         self._sliced_metrics[slice].log_roc_data_point(fpr, tpr, threshold)
         self._update_metadata()
 
-
     def log_roc_curve(self, slice: str, fpr: List[float], tpr: List[float],
                       threshold: List[float]) -> None:
         """logs a ROC curve for this slice
@@ -384,7 +384,6 @@ class SlicedClassificationMetrics(Artifact):
         self._upsert_classification_metrics_for_slice(slice)
         self._sliced_metrics[slice].log_roc_curve(fpr, tpr, threshold)
         self._update_metadata()
-
 
     def set_confusion_matrix_categories(self, slice: str,
                                         categories: List[str]) -> None:
@@ -436,7 +435,7 @@ class SlicedClassificationMetrics(Artifact):
         self._update_metadata()
 
     def log_confusion_matrix(self, slice: str, categories: List[str],
-                              matrix: List[List[int]]) -> None:
+                             matrix: List[List[int]]) -> None:
         """Bulk loads the whole confusion matrix for a slice.
 
         Args:
@@ -445,8 +444,7 @@ class SlicedClassificationMetrics(Artifact):
           matrix: Complete confusion matrix.
         """
         self._upsert_classification_metrics_for_slice(slice)
-        self._sliced_metrics[slice].log_confusion_matrix(
-            categories, matrix)
+        self._sliced_metrics[slice].log_confusion_matrix(categories, matrix)
         self._update_metadata()
 
 
