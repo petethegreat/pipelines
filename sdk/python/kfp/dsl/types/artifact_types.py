@@ -335,7 +335,7 @@ class SlicedClassificationMetrics(Artifact):
     schema_title = 'system.SlicedClassificationMetrics'
 
     def __init__(self, **kwargs):
-        """initialise _sliced_metrics"""
+        """initialise _sliced_metrics."""
         self._sliced_metrics = {}
         super().__init__(**kwargs)
 
@@ -373,7 +373,7 @@ class SlicedClassificationMetrics(Artifact):
 
     def log_roc_curve(self, slice: str, fpr: List[float], tpr: List[float],
                       threshold: List[float]) -> None:
-        """logs a ROC curve for this slice
+        """logs a ROC curve for this slice.
 
         Args:
           slice: String representing slice label.
