@@ -33,7 +33,27 @@
           }
         ]
       }
+    },
+    {
+      "slice": "slice3",
+      "sliceClassificationMetrics": {
+        "confusionMatrix":
+        {
+          "annotationSpecs":
+          [
+            {"displayName": "dog"},
+            {"displayName": "cat"},
+            {"displayName": "horses"}
+          ],
+          "rows":
+            [
+              {"row" : [2, 6, 0]},
+              {"row" : [3, 0, 0]},
+              {"row" : [0, 0, 3]}
+            ]
+        }
+      }
     }
   ],
-  "test": 1.0
+  "testtest": 2.0
 }

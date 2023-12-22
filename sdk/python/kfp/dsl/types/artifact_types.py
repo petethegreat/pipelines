@@ -343,7 +343,7 @@ class SlicedClassificationMetrics(Artifact):
         if slice not in self._sliced_metrics:
             self._sliced_metrics[slice] = ClassificationMetrics()
 
-    def _update_metadata(self, slice: str) -> None:
+    def _update_metadata(self) -> None:
         """Updates metadata to adhere to the metrics schema."""
         self.metadata = {'evaluationSlices': []}
         for slice in self._sliced_metrics.keys():
@@ -368,7 +368,7 @@ class SlicedClassificationMetrics(Artifact):
 
         self._upsert_classification_metrics_for_slice(slice)
         self._sliced_metrics[slice].log_roc_data_point(fpr, tpr, threshold)
-        self._update_metadata(slice)
+        self._update_metadata()
 
 
     def log_roc_curve(self, slice: str, fpr: List[float], tpr: List[float],
@@ -383,7 +383,7 @@ class SlicedClassificationMetrics(Artifact):
         """
         self._upsert_classification_metrics_for_slice(slice)
         self._sliced_metrics[slice].log_roc_curve(fpr, tpr, threshold)
-        self._update_metadata(slice)
+        self._update_metadata()
 
 
     def set_confusion_matrix_categories(self, slice: str,
@@ -399,7 +399,7 @@ class SlicedClassificationMetrics(Artifact):
         """
         self._upsert_classification_metrics_for_slice(slice)
         self._sliced_metrics[slice].set_confusion_matrix_categories(categories)
-        self._update_metadata(slice)
+        self._update_metadata()
 
     def log_confusion_matrix_row(self, slice: str, row_category: str,
                                  row: List[int]) -> None:
@@ -415,7 +415,7 @@ class SlicedClassificationMetrics(Artifact):
         """
         self._upsert_classification_metrics_for_slice(slice)
         self._sliced_metrics[slice].log_confusion_matrix_row(row_category, row)
-        self._update_metadata(slice)
+        self._update_metadata()
 
     def log_confusion_matrix_cell(self, slice: str, row_category: str,
                                   col_category: str, value: int) -> None:
@@ -433,9 +433,9 @@ class SlicedClassificationMetrics(Artifact):
         self._upsert_classification_metrics_for_slice(slice)
         self._sliced_metrics[slice].log_confusion_matrix_cell(
             row_category, col_category, value)
-        self._update_metadata(slice)
+        self._update_metadata()
 
-    def load_confusion_matrix(self, slice: str, categories: List[str],
+    def log_confusion_matrix(self, slice: str, categories: List[str],
                               matrix: List[List[int]]) -> None:
         """Bulk loads the whole confusion matrix for a slice.
 
@@ -445,9 +445,9 @@ class SlicedClassificationMetrics(Artifact):
           matrix: Complete confusion matrix.
         """
         self._upsert_classification_metrics_for_slice(slice)
-        self._sliced_metrics[slice].log_confusion_matrix_cell(
+        self._sliced_metrics[slice].log_confusion_matrix(
             categories, matrix)
-        self._update_metadata(slice)
+        self._update_metadata()
 
 
 class HTML(Artifact):

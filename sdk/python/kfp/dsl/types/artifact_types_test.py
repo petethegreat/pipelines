@@ -48,11 +48,11 @@ class ArtifactsTest(unittest.TestCase):
         metrics.log_roc_data_point("slice1", threshold=26.3, tpr=98.6, fpr=66.4)
         metrics.log_roc_data_point("slice2", threshold=0.15, tpr=28.5, fpr=84.32)
         metrics.log_roc_data_point("slice2", threshold=26.6, tpr=93.6, fpr=56.4)
-        # metrics.set_confusion_matrix_categories(['dog', 'cat', 'horses'])
-        # metrics.log_confusion_matrix_row('dog', [2, 6, 0])
-        # metrics.log_confusion_matrix_cell('cat', 'dog', 3)
-        # metrics.log_confusion_matrix_cell('horses', 'horses', 3)
-        metrics.metadata['test'] = 1.0
+        metrics.set_confusion_matrix_categories("slice3", ['dog', 'cat', 'horses'])
+        metrics.log_confusion_matrix_row('slice3', 'dog', [2, 6, 0])
+        metrics.log_confusion_matrix_cell('slice3','cat', 'dog', 3)
+        metrics.log_confusion_matrix_cell('slice3','horses', 'horses', 3)
+        metrics.metadata['testtest'] = 2.0
         with open(
                 os.path.join(
                     os.path.dirname(__file__), 'test_data',
@@ -74,6 +74,27 @@ class ArtifactsTest(unittest.TestCase):
                 os.path.join(
                     os.path.dirname(__file__), 'test_data',
                     'expected_io_types_bulk_load_classification_metrics.json')
+        ) as json_file:
+            expected_json = json.load(json_file)
+            self.assertEqual(expected_json, metrics.metadata)
+    
+    def test_sliced_complex_metrics_bulk_loading(self):
+        metrics = dsl.SlicedClassificationMetrics()
+        metrics.log_roc_curve(
+            'roc_slice',
+            fpr=[85.1, 85.1, 85.1],
+            tpr=[52.6, 52.6, 52.6],
+            threshold=[53.6, 53.6, 53.6])
+        metrics.log_confusion_matrix(
+            'conf_matrix_slice',
+            ['dog', 'cat', 'horses'],
+            [[2, 6, 0], [3, 5, 6], [5, 7, 8]])
+        metrics.metadata['thing'] = 'potato'
+        
+        with open(
+                os.path.join(
+                    os.path.dirname(__file__), 'test_data',
+                    'expected_io_types_bulk_load_sliced_classification_metrics.json')
         ) as json_file:
             expected_json = json.load(json_file)
             self.assertEqual(expected_json, metrics.metadata)
